@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import InvoiceDetail from "./components/InvoiceDetail";
 import InvoiceForm from "./components/InvoiceForm";
 import AppLogo from "./assets/logo.svg";
-import ImageIcon from "./assets/oval.png";
+import ImageIcon from "./assets/Oval.png";
 
 // --- DUMMY DATA ---
 // This acts as our temporary database
