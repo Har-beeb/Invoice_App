@@ -1,0 +1,25 @@
+/* Imports all Tailwind utilities */
+@import "tailwindcss";
+
+/* Configure dark mode to work with the 'dark' class */
+@variant dark (&:is(.dark *));
+
+@theme {
+  /* This tells Tailwind v4 to use League Spartan for all standard text */
+  --font-sans: "League Spartan", sans-serif;
+}
+
+/* A quick baseline for dark mode transitions */
+body {
+  background-color: #f9fafb;
+  color: #111827;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+/* Base styles for when the dark class is active */
+.dark body {
+  background-color: #141625;
+  color: #ffffff;
+}
