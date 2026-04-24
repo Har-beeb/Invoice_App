@@ -28,7 +28,7 @@ const FormInput = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full bg-white dark:bg-[#1E2139] border rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none transition-colors ${
+        className={`w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA] focus:border-[#7C5DFA] transition-colors ${
           error
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300 dark:border-[#252945] focus:border-blue-500"

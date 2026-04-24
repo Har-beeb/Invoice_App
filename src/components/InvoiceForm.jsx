@@ -1,7 +1,13 @@
 import { useState } from "react";
 import FormInput from "./FormInput";
 
-const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }) => {
+const InvoiceForm = ({
+  isOpen,
+  onClose,
+  addInvoice,
+  updateInvoice,
+  invoiceData,
+}) => {
   // Initialize state using a callback function so we can safely check for missing arrays
   const [formData, setFormData] = useState(() => {
     // IF EDIT MODE: Use existing data, but GUARANTEE 'items' is at least an empty array
@@ -67,7 +73,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
     // ADD THIS LINE:
     console.log("🕵️ THE BOUNCER SAYS THESE ARE MISSING:", newErrors);
     return isValid;
-  };;
+  };
 
   // HELPER: Generates a random ID like "RT3080"
   const generateID = () => {
@@ -78,22 +84,22 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
     for (let i = 0; i < 4; i++) id += Math.floor(Math.random() * 10);
     return id;
   };
-  
+
   // HELPER: Calculates Due Date based on Invoice Date + Payment Terms
   const calculateDueDate = (startDate, terms) => {
     if (!startDate) return "No Date";
-    
+
     // Convert the string to a real Date object
     const date = new Date(startDate);
-    
+
     // Add the payment terms (in days) to the current date
     date.setDate(date.getDate() + parseInt(terms));
-    
+
     // Reformat back to YYYY-MM-DD
     const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+
     return `${yyyy}-${mm}-${dd}`;
   };
 
@@ -150,7 +156,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
 
     console.log("4. Closing the form...");
     onClose();
-  };;
+  };
 
   // 2. ONE function to handle every single input field
   const handleChange = (e) => {
@@ -210,6 +216,23 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
 
   return (
     <div className="fixed inset-0 z-50 flex">
+      {/* Scrollbar Styling Injection */}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #DFE3FA;
+          border-radius: 4px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #252945;
+        }
+      `}</style>
+
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/50 transition-opacity"
@@ -235,7 +258,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
             {/* --- BILL FROM SECTION --- */}
             <section>
               <h3 className="text-[#7C5DFA] font-bold mb-6 text-sm">
-                Bill from
+                Bill From
               </h3>
               <div className="flex flex-col gap-6">
                 <FormInput
@@ -271,7 +294,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
 
             {/* --- BILL TO SECTION --- */}
             <section>
-              <h3 className="text-[#7C5DFA] font-bold mb-6 text-sm">Bill to</h3>
+              <h3 className="text-[#7C5DFA] font-bold mb-6 text-sm">Bill To</h3>
               <div className="flex flex-col gap-6">
                 <FormInput
                   label="Client's Name"
@@ -325,33 +348,90 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                 </div>
               </div>
 
+              {/* PERFECTLY ALIGNED DATE AND PAYMENT TERMS */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <FormInput
-                  label="Invoice Date"
-                  name="invoiceDate"
-                  type="date"
-                  value={formData.invoiceDate}
-                  onChange={handleChange}
-                  error={errors.invoiceDate}
-                />
+                {/* Invoice Date - Now using Custom Overlay Facade! */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-gray-500 dark:text-gray-400">
+                    Invoice Date
+                  </label>
+                  <div className="relative w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md transition-colors focus-within:border-[#7C5DFA] hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA]">
+                    {/* The Visual Facade (Formatted Text & Purple SVG) */}
+                    <div className="absolute inset-0 p-4 flex items-center justify-between pointer-events-none">
+                      <span className="text-gray-900 dark:text-white font-bold">
+                        {formData.invoiceDate
+                          ? new Date(formData.invoiceDate).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : ""}
+                      </span>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M14 2.66667H13.3333V1.33333H12V2.66667H4V1.33333H2.66667V2.66667H2C1.26667 2.66667 0.673333 3.26 0.673333 4L0.666667 14.6667C0.666667 15.4067 1.26667 16 2 16H14C14.7333 16 15.3333 15.4067 15.3333 14.6667V4C15.3333 3.26 14.7333 2.66667 14 2.66667ZM14 14.6667H2V7.33333H14V14.6667ZM14 6H2V4H14V6Z"
+                          fill="#7C5DFA"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* The Actual Input (Invisible but interactive) */}
+                    <input
+                      type="date"
+                      name="invoiceDate"
+                      value={formData.invoiceDate}
+                      onChange={handleChange}
+                      className="w-full p-4 opacity-0 cursor-pointer relative z-10"
+                    />
+                  </div>
+                </div>
+
+                {/* Payment Terms */}
                 <div className="flex flex-col gap-2">
                   <label className="text-sm text-gray-500 dark:text-gray-400">
                     Payment Terms
                   </label>
-                  <select
-                    name="paymentTerms"
-                    value={formData.paymentTerms}
-                    onChange={handleChange}
-                    className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
-                  >
-                    <option value="1">Net 1 Day</option>
-                    <option value="7">Net 7 Days</option>
-                    <option value="14">Net 14 Days</option>
-                    <option value="30">Net 30 Days</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="paymentTerms"
+                      value={formData.paymentTerms}
+                      onChange={handleChange}
+                      className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA] focus:border-[#7C5DFA] transition-colors cursor-pointer appearance-none"
+                    >
+                      <option value="1">Net 1 Day</option>
+                      <option value="7">Net 7 Days</option>
+                      <option value="14">Net 14 Days</option>
+                      <option value="30">Net 30 Days</option>
+                    </select>
+                    <svg
+                      className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
+                      width="11"
+                      height="7"
+                      viewBox="0 0 11 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1.25L5.45116 5.25L9.90233 1.25"
+                        stroke="#7C5DFA"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
+              {/* Project Description */}
               <div className="flex flex-col gap-2 mt-4">
                 <label className="text-sm text-gray-500 dark:text-gray-400">
                   Project Description
@@ -362,32 +442,30 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                   value={formData.projectDescription}
                   onChange={handleChange}
                   placeholder="e.g. Graphic Design Service"
-                  className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA] focus:border-[#7C5DFA] transition-colors"
                 />
               </div>
+
               {/* --- ITEM LIST SECTION --- */}
               <section className="mt-8">
                 <h3 className="text-[#777F98] text-lg font-bold mb-4">
                   Item List
                 </h3>
 
-                {/* Table Headers (Hidden on Mobile) */}
                 <div className="hidden md:grid grid-cols-[1fr_80px_100px_100px_16px] gap-4 mb-4 text-sm text-gray-500 dark:text-gray-400">
                   <label>Item Name</label>
                   <label>Qty.</label>
                   <label>Price</label>
                   <label>Total</label>
-                  <label></label> {/* Empty space for delete icon */}
+                  <label></label>
                 </div>
 
-                {/* The Dynamic Rows */}
                 <div className="flex flex-col gap-12 md:gap-4 mb-6">
                   {formData.items.map((item, index) => (
                     <div
                       key={index}
                       className="grid grid-cols-[64px_1fr_1fr_16px] md:grid-cols-[1fr_80px_100px_100px_16px] gap-4 items-center"
                     >
-                      {/* Item Name (Spans full width on mobile) */}
                       <div className="col-span-4 md:col-span-1 flex flex-col gap-2">
                         <label className="md:hidden text-sm text-gray-500">
                           Item Name
@@ -397,7 +475,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                           name="name"
                           value={item.name}
                           onChange={(e) => handleItemChange(index, e)}
-                          className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA] focus:border-[#7C5DFA] transition-colors"
                         />
                       </div>
 
@@ -410,7 +488,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                           name="quantity"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(index, e)}
-                          className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-center text-gray-900 dark:text-white font-bold focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-center text-gray-900 dark:text-white font-bold focus:outline-none hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA] focus:border-[#7C5DFA] transition-colors"
                         />
                       </div>
 
@@ -423,11 +501,10 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                           name="price"
                           value={item.price}
                           onChange={(e) => handleItemChange(index, e)}
-                          className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-blue-500"
+                          className="w-full bg-white dark:bg-[#1E2139] border border-gray-300 dark:border-[#252945] rounded-md p-4 text-gray-900 dark:text-white font-bold focus:outline-none hover:border-[#7C5DFA] dark:hover:border-[#7C5DFA] focus:border-[#7C5DFA] transition-colors"
                         />
                       </div>
 
-                      {/* Auto-calculated Total */}
                       <div className="flex flex-col gap-2">
                         <label className="md:hidden text-sm text-gray-500">
                           Total
@@ -437,11 +514,10 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                         </div>
                       </div>
 
-                      {/* Delete Icon */}
                       <button
                         type="button"
                         onClick={() => handleDeleteItem(index)}
-                        className="mt-6 md:mt-0 text-gray-400 hover:text-red-500 transition-colors"
+                        className="mt-6 md:mt-0 text-[#888EB0] hover:text-[#EC5757] transition-colors"
                       >
                         <svg
                           width="13"
@@ -459,14 +535,23 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
                   ))}
                 </div>
 
-                {/* Add New Item Button */}
                 <button
                   type="button"
                   onClick={handleAddItem}
-                  className="w-full bg-gray-100 dark:bg-[#252945] hover:bg-gray-200 dark:hover:bg-[#1E2139] text-gray-700 dark:text-gray-300 font-bold py-4 rounded-full transition-colors"
+                  className="w-full bg-gray-100 dark:bg-[#252945] hover:bg-[#DFE3FA] dark:hover:bg-[#1E2139] text-[#7E88C3] dark:text-[#DFE3FA] font-bold py-4 rounded-full transition-colors"
                 >
                   + Add New Item
                 </button>
+
+                {/* CONDITIONALLY RENDERED VALIDATION ERROR MESSAGES */}
+                {Object.keys(errors).length > 0 && (
+                  <div className="mt-8 text-[#EC5757] text-[10px] md:text-xs font-bold flex flex-col gap-1 tracking-wide">
+                    <p>- All fields must be added</p>
+                    {formData.items.length === 0 && (
+                      <p>- An item must be added</p>
+                    )}
+                  </div>
+                )}
               </section>
             </section>
           </form>
@@ -476,7 +561,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
         <div className="bg-white dark:bg-[#141625] p-6 flex items-center justify-between shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.1)] dark:shadow-none z-10 rounded-br-2xl border-t border-gray-100 dark:border-gray-800">
           <button
             onClick={onClose}
-            className="bg-gray-100 hover:bg-gray-200 dark:bg-[#252945] dark:hover:bg-white dark:hover:text-black dark:text-white text-gray-700 font-bold py-3 px-6 rounded-full transition-colors"
+            className="bg-gray-100 hover:bg-[#DFE3FA] dark:bg-[#252945] dark:hover:bg-white dark:hover:text-black dark:text-white text-[#7E88C3] font-bold py-3 px-6 rounded-full transition-colors"
           >
             Discard
           </button>
@@ -484,7 +569,7 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
           <div className="flex gap-2">
             <button
               onClick={() => handleSubmit("draft")}
-              className="bg-[#373B53] hover:bg-[#1E2139] text-gray-300 font-bold py-3 px-6 rounded-full transition-colors hidden md:block"
+              className="bg-[#373B53] hover:bg-[#1E2139] dark:hover:bg-[#1E2139] text-[#888EB0] font-bold py-3 px-6 rounded-full transition-colors hidden md:block"
             >
               Save as Draft
             </button>
@@ -499,6 +584,6 @@ const InvoiceForm = ({ isOpen, onClose, addInvoice, updateInvoice, invoiceData }
       </div>
     </div>
   );
-};;
+};
 
 export default InvoiceForm;
